@@ -1,0 +1,23 @@
+{
+  "name": "twittercatbot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.5.0",
+    "cron": "^2.4.3",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "fs": "^0.0.1-security",
+    "request": "^2.88.2",
+    "twitter-api-v2": "^1.15.1"
+  }
+}
