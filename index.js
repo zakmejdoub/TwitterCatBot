@@ -11,35 +11,55 @@ app.listen(port, () => {
     console.log(`Listening on port ${port}`)
 })
 
+const links = [
+    'https://api.thecatapi.com/v1/images/search',
+    'https://cataas.com/cat/gif?json=true'
+];
+
 const tweet = async () => {
 
-    const imageResponse = await axios.get('https://cataas.com/cat?json=true');
-    const imageUrl = 'https://cataas.com' + imageResponse.data.url;
+    function chooseRandomLink() {
+        const randomIndex = Math.floor(Math.random() * links.length);
+        return links[randomIndex];
+    }
+
+    const imageApi = chooseRandomLink();
+    let pictureFormat = '.jpg';
+
+    if (imageApi.includes('gif')){
+        pictureFormat = '.gif';
+    }
+
+    const imageResponse = await axios.get(imageApi);
+
+    let imageUrl = '';
+
+    if (pictureFormat == '.gif'){
+        imageUrl = 'https://cataas.com/' + imageResponse.data.url;
+    }else {
+        imageUrl = imageResponse.data[0].url;
+    }
 
     const uri = imageUrl;
-    const filename = "cat.png";
+    const filename = 'cat' + pictureFormat;
 
     download(uri, filename, async function(){
         try {
-            const mediaId = await twitterClient.v1.uploadMedia("./cat.png");
+            const mediaId = await twitterClient.v1.uploadMedia('./cat' + pictureFormat);
             await twitterClient.v2.tweet({
-                text: "Testttt",
+                text: "",
                 media: {
                     media_ids: [mediaId]
                 }
             });
+            const date = new Date();
+            const time = date.toLocaleTimeString();     
+            console.log('image sent at: ', time);
         } catch (e) {
             console.log(e)
+            tweet();
         }
     });
 }
 
 tweet();
-
-const cronTweet = new CronJob("*/30 * * * * ", async () => {
-    tweet();
-});
-  
-cronTweet.start();
-
-
